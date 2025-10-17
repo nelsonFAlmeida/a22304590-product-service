@@ -43,6 +43,30 @@ public class ProductService {
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
     }
 
+    @Transactional
+    public Product removeStock(UUID id, Integer requested) {
+        Product product;
+
+        try  {
+            product = getProductById(id);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Product not found!");
+        }
+
+        int available = product.getStock();
+
+        if (available < requested) {
+            throw new IllegalArgumentException(
+                    "Insufficient stock for product " + product.getId() +
+                            " (requested " + requested + ", available " + available + ")"
+            );
+        }
+
+        product.setStock(product.getStock() - requested);
+
+        return productRepository.save(product);
+    }
+
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }

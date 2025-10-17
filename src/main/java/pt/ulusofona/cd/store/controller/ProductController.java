@@ -3,6 +3,7 @@ package pt.ulusofona.cd.store.controller;
 import lombok.RequiredArgsConstructor;
 import pt.ulusofona.cd.store.dto.ProductRequest;
 import pt.ulusofona.cd.store.dto.ProductResponse;
+import pt.ulusofona.cd.store.dto.RemoveStock;
 import pt.ulusofona.cd.store.model.Product;
 import pt.ulusofona.cd.store.mapper.ProductMapper;
 import pt.ulusofona.cd.store.service.ProductService;
@@ -53,9 +54,21 @@ public class ProductController {
         return ResponseEntity.ok(ProductMapper.toResponse(updated));
     }
 
+    @PutMapping("/{id}/stock/remove")
+    public ResponseEntity<ProductResponse> removeStock(
+            @PathVariable UUID id,
+            @Valid @RequestBody RemoveStock request
+    ) {
+        Product updated = service.removeStock(id, request.quantity());
+        return ResponseEntity.ok(ProductMapper.toResponse(updated));
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         service.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }
