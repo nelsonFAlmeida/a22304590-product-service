@@ -15,7 +15,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
-public class ProductController {
+public class    ProductController {
 
     private final ProductService service;
 
@@ -34,6 +34,23 @@ public class ProductController {
         Product product = service.getProductById(id);
         return ResponseEntity.ok(ProductMapper.toResponse(product));
     }
+
+    @GetMapping("/supplier/{supplierId}")
+    public ResponseEntity<List<ProductResponse>> getBySupplier(@PathVariable String supplierId) {
+        UUID id;
+        try {
+            id = UUID.fromString(supplierId);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build(); // 400 se o UUID for inválido
+        }
+
+        List<Product> products = service.getProductsBySupplier(id);
+        List<ProductResponse> response = products.stream()
+                .map(ProductMapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAll() {
@@ -90,7 +107,7 @@ public class ProductController {
         return service.supplierHasBlockedProducts(supplierId);
     }
 
-    @PutMapping("/api/v1/suppliers/{supplierId}/products/discontinue")
+    @PutMapping("/suppliers/{supplierId}/products/discontinue")
     public ResponseEntity<Void> discontinueProductsBySupplier(@PathVariable UUID supplierId) {
         service.discontinueProductsBySupplier(supplierId);
         return ResponseEntity.noContent().build(); // 204 No Content

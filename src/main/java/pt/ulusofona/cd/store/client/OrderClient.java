@@ -8,6 +8,6 @@ import java.util.UUID;
 @FeignClient(name = "order-service", url = "http://order-service:8083")
 public interface OrderClient {
 
-    @GetMapping("/product/{productId}/has-pending")
+    @GetMapping("/api/v1/orders/product/{productId}/has-pending")
     Boolean productHasPendingOrder(@PathVariable("productId") UUID productId);
 }

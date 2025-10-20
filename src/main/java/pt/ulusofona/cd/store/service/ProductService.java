@@ -142,7 +142,10 @@ public class ProductService {
             return false;
         }
 
-        for (Product product : products) { // enventualmente fazer isto tudo num so pedido
+
+        // enventualmente fazer isto tudo num so pedido
+        //** verificar se algum produto nao descontinuado tem encomendas pendentes
+        for (Product product : products) {
             if (Boolean.FALSE.equals(product.getIsDiscontinued())) {
                 boolean hasPending = orderClient.productHasPendingOrder(product.getId());
                 if (hasPending) {
@@ -150,7 +153,6 @@ public class ProductService {
                 }
             }
         }
-
         return false;
     }
 
