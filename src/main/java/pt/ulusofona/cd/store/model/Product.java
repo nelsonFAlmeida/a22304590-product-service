@@ -46,6 +46,10 @@ public class Product {
     @Column(name = "currency", nullable = false, length = 3)
     private String currency = "EUR";
 
+    @Column(name = "is_discontinued", nullable = false)
+    private Boolean isDiscontinued;
+
+
     @Column(name = "supplier_id", columnDefinition = "UUID")
     private UUID supplierId;
 

@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS product (
     price NUMERIC(15,2) NOT NULL CHECK (price >= 0),
     stock INT NOT NULL CHECK (stock >= 0),
     currency CHAR(3) NOT NULL DEFAULT 'EUR',
+    is_discontinued BOOLEAN NOT NULL DEFAULT false, -- << aqui
     supplier_id UUID,
     created_at TIMESTAMPTZ DEFAULT now(),
     updated_at TIMESTAMPTZ DEFAULT now()

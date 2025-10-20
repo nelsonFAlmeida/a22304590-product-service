@@ -3,6 +3,7 @@ package pt.ulusofona.cd.store.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pt.ulusofona.cd.store.client.OrderClient;
 import pt.ulusofona.cd.store.client.SupplierClient;
 import pt.ulusofona.cd.store.dto.ProductRequest;
 import pt.ulusofona.cd.store.dto.SupplierDto;
@@ -10,6 +11,7 @@ import pt.ulusofona.cd.store.exception.ProductNotFoundException;
 import pt.ulusofona.cd.store.mapper.ProductMapper;
 import pt.ulusofona.cd.store.model.Product;
 import pt.ulusofona.cd.store.repository.ProductRepository;
+import pt.ulusofona.cd.store.client.OrderClient;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +22,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final SupplierClient supplierClient;
+    private final OrderClient orderClient;
 
     @Transactional
     public Product createProduct(ProductRequest request) {
@@ -67,6 +70,41 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    @Transactional
+    public Product addStock(UUID id, Integer requested) {
+        Product product;
+
+        try  {
+            product = getProductById(id);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Product not found!");
+        }
+
+        product.setStock(product.getStock() + requested);
+
+        return productRepository.save(product);
+    }
+
+    @Transactional
+    public Product discontinueProduct(UUID id) {
+        Product product = getProductById(id);
+
+        boolean productHasPendingOrder;
+        try {
+            productHasPendingOrder = orderClient.productHasPendingOrder(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao comunicar com o serviço de encomendas", e);
+        }
+
+        if (productHasPendingOrder) {
+            throw new IllegalStateException("Não é possível descontinuar: existem encomendas pendentes");
+        }
+
+        product.setIsDiscontinued(true);
+        return productRepository.save(product);
+    }
+
+
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
@@ -94,4 +132,40 @@ public class ProductService {
         Product product = getProductById(id);
         productRepository.delete(product);
     }
+
+
+    //TODO o modo de Alterar estado de um supplier pode ser melhorado para ser mais seguro e mais eficiente usando pedidos maiores em vez de varios pedidos
+    public Boolean supplierHasBlockedProducts(UUID supplierId) {
+        List<Product> products = getProductsBySupplier(supplierId);
+
+        if (products == null || products.isEmpty()) {
+            return false;
+        }
+
+        for (Product product : products) { // enventualmente fazer isto tudo num so pedido
+            if (Boolean.FALSE.equals(product.getIsDiscontinued())) {
+                boolean hasPending = orderClient.productHasPendingOrder(product.getId());
+                if (hasPending) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Transactional
+    public void discontinueProductsBySupplier(UUID supplierId) { // so pode ser usada depois do supplierHasBlockedProducts() porque ja foi feita uma verificação antes
+        List<Product> products = productRepository.findBySupplierId(supplierId);
+
+        for (Product product : products) {
+            if (!Boolean.TRUE.equals(product.getIsDiscontinued())) {
+                product.setIsDiscontinued(true);
+                productRepository.save(product);
+            }
+        }
+    }
+
+
+
 }

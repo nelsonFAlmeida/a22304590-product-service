@@ -30,5 +30,7 @@ public class ProductRequest {
     @Size(min = 3, max = 3, message = "Currency must be a 3-letter ISO code")
     private String currency = "EUR";
 
+    private Boolean isDiscontinued = false;
+
     private UUID supplierId;
 }

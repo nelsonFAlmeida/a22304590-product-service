@@ -3,7 +3,7 @@ package pt.ulusofona.cd.store.controller;
 import lombok.RequiredArgsConstructor;
 import pt.ulusofona.cd.store.dto.ProductRequest;
 import pt.ulusofona.cd.store.dto.ProductResponse;
-import pt.ulusofona.cd.store.dto.RemoveStock;
+import pt.ulusofona.cd.store.dto.Stock;
 import pt.ulusofona.cd.store.model.Product;
 import pt.ulusofona.cd.store.mapper.ProductMapper;
 import pt.ulusofona.cd.store.service.ProductService;
@@ -57,9 +57,18 @@ public class ProductController {
     @PutMapping("/{id}/stock/remove")
     public ResponseEntity<ProductResponse> removeStock(
             @PathVariable UUID id,
-            @Valid @RequestBody RemoveStock request
+            @Valid @RequestBody Stock request
     ) {
         Product updated = service.removeStock(id, request.quantity());
+        return ResponseEntity.ok(ProductMapper.toResponse(updated));
+    }
+
+    @PutMapping("/{id}/stock/add")
+    public ResponseEntity<ProductResponse> addStock(
+            @PathVariable UUID id,
+            @Valid @RequestBody Stock request
+    ) {
+        Product updated = service.addStock(id, request.quantity());
         return ResponseEntity.ok(ProductMapper.toResponse(updated));
     }
 
@@ -69,6 +78,24 @@ public class ProductController {
         service.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/discontinue")
+    public ResponseEntity<ProductResponse> discontinue(@PathVariable UUID id) {
+        Product discontinued = service.discontinueProduct(id);
+        return ResponseEntity.ok(ProductMapper.toResponse(discontinued));
+    }
+
+    @GetMapping("/{supplierId}/products/blocked")
+    public Boolean supplierHasBlockedProducts(@PathVariable UUID supplierId) {
+        return service.supplierHasBlockedProducts(supplierId);
+    }
+
+    @PutMapping("/api/v1/suppliers/{supplierId}/products/discontinue")
+    public ResponseEntity<Void> discontinueProductsBySupplier(@PathVariable UUID supplierId) {
+        service.discontinueProductsBySupplier(supplierId);
+        return ResponseEntity.noContent().build(); // 204 No Content
+    }
+
 
 
 }

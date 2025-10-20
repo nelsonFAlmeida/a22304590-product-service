@@ -13,6 +13,7 @@ public class ProductMapper {
         p.setSku(dto.getSku().trim());
         p.setPrice(dto.getPrice());
         p.setStock(dto.getStock());
+        p.setIsDiscontinued(dto.getIsDiscontinued());
         p.setSupplierId(dto.getSupplierId());
         p.setCurrency(dto.getCurrency() != null ? dto.getCurrency() : "EUR");
         return p;
@@ -27,6 +28,7 @@ public class ProductMapper {
         r.setPrice(entity.getPrice());
         r.setStock(entity.getStock());
         r.setCurrency(entity.getCurrency());
+        r.setIsDiscontinued(entity.getIsDiscontinued());
         return r;
     }
 }
