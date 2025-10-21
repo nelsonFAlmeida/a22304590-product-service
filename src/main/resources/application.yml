@@ -4,6 +4,14 @@ server:
 spring:
   application:
     name: ${APPLICATION_NAME}
+  kafka:
+    consumer:
+      bootstrap-servers: kafka:9092
+      group-id: product-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
 
   datasource:
     url: jdbc:postgresql://${POSTGRES_DB}:5432/${POSTGRES_DB}
@@ -46,3 +54,7 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+supplier:
+  events:
+    supplier-deactivated-events: supplier-deactivated-events

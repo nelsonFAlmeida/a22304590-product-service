@@ -1,0 +1,13 @@
+package pt.ulusofona.cd.store.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class SupplierDeactivatedEvent {
+
+    private String supplierId;
+}

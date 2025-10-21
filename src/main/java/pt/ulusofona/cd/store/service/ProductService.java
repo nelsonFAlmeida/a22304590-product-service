@@ -168,6 +168,9 @@ public class ProductService {
         }
     }
 
-
+    public int setProductsInactiveBySupplierId(String id){
+        UUID supplierUuid = UUID.fromString(id);
+        return productRepository.setProductsInactiveBySupplierId(supplierUuid);
+    }
 
 }
