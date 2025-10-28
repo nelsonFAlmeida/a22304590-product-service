@@ -58,3 +58,7 @@ springdoc:
 supplier:
   events:
     supplier-deactivated-events: supplier-deactivated-events
+
+order:
+  events:
+    order-cancelled-event: order-cancelled-event # NOME DA PROPRIEDADE
