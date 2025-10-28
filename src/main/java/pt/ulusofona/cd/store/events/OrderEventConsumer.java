@@ -14,7 +14,7 @@ import java.util.UUID;
 public class OrderEventConsumer {
     private final ProductService productService;
 
-    @KafkaListener(topics = "${order-cancelled-event}", groupId = "${spring.kafka.consumer.group-id}")
+    @KafkaListener(topics = "${order.events.order-cancelled-events}", groupId = "${spring.kafka.consumer.group-id}")
     public void listenOrderCancelledEvent(OrderCancelledEvent event) {
         String productId = event.getProductId();
         System.out.println("Received Order Cancelled Event for Product ID: " + productId);
