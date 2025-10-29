@@ -62,3 +62,4 @@ supplier:
 order:
   events:
     order-cancelled-events: order-cancelled-events # NOME DA PROPRIEDADE
+    order-confirmed-events: order-confirmed-events

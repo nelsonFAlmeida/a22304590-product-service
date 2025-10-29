@@ -22,4 +22,12 @@ public class OrderEventConsumer {
         System.out.println("Successfully added stock for product " + productId + " due to order cancellation.");
     }
 
+    @KafkaListener(topics = "${order.events.order-confirmed-events}", groupId = "${spring.kafka.consumer.group-id}")
+    public void listenOrderConfirmedEvent(pt.ulusofona.cd.store.dto.OrderConfirmedEvent event) {
+        String productId = event.getProductId();
+        System.out.println("Received Order Confirmed Event for Product ID: " + productId);
+        productService.removeStock(UUID.fromString(productId), event.getQuantity());
+        System.out.println("Successfully removed stock for product " + productId + " due to order confirmation.");
+    }
+
 }
