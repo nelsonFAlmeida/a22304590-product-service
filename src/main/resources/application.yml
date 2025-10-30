@@ -58,6 +58,7 @@ springdoc:
 supplier:
   events:
     supplier-deactivated-events: supplier-deactivated-events
+    report-production-events: report-production-events
 
 order:
   events:
