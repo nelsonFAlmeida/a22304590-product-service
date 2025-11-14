@@ -85,6 +85,11 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    @Transactional()
+    public long countProductsBySupplierAndDiscontinued(UUID supplierId, boolean isDiscontinued) {
+        return productRepository.countBySupplierIdAndIsDiscontinued(supplierId, isDiscontinued);
+    }
+
     @Transactional
     public Product discontinueProduct(UUID id) {
         Product product = getProductById(id);

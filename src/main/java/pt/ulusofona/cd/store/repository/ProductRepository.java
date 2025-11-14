@@ -19,6 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findByNameContainingIgnoreCase(String name);
     List<Product> findByPriceBetween(BigDecimal minPrice, BigDecimal maxPrice);
     List<Product> findBySupplierId(UUID supplierId);
+    Long countBySupplierIdAndIsDiscontinued(UUID supplierId, Boolean isDiscontinued);
 
     @Transactional
     @Modifying

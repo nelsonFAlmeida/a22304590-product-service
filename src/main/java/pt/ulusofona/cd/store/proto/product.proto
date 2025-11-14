@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "pt.ulusofona.cd.store";
+option java_outer_classname = "ProductProto";
+
+service ProductService {
+  rpc CountDiscontinuedProductsBySupplier (CountDiscontinuedProductsRequest) returns (ProductCountResponse);
+}
+
+message CountDiscontinuedProductsRequest {
+  string supplier_id = 1;
+  bool is_discontinued = 2;
+}
+
+message ProductCountResponse {
+  int32 count = 1;
+}

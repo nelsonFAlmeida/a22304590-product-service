@@ -34,6 +34,9 @@ spring:
       missing-topics-fatal: false
       ack-mode: MANUAL_IMMEDIATE
 
+  grpc:
+    server:
+      port: 9090
 
   datasource:
     url: jdbc:postgresql://${POSTGRES_DB}:5432/${POSTGRES_DB}
